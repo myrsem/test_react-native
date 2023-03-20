@@ -1,6 +1,10 @@
-import * as SplashScreen from 'expo-splash-screen';
-import React, { useCallback, useEffect } from "react";
-import { useFonts, Roboto_400Regular, Roboto_500Medium } from '@expo-google-fonts/roboto';
+import * as SplashScreen from "expo-splash-screen";
+import React, { useState, useCallback, useEffect } from "react";
+import {
+  useFonts,
+  Roboto_400Regular,
+  Roboto_500Medium,
+} from "@expo-google-fonts/roboto";
 import {
   StyleSheet,
   TouchableWithoutFeedback,
@@ -12,14 +16,34 @@ import {
   ImageBackground,
 } from "react-native";
 import RegistrationScreen from "./Screens/RegistrationScreen";
-
-// SplashScreen.preventAutoHideAsync();
+import LoginScreen from "./Screens/LoginScreen";
 
 const App = () => {
+  const [dimensions, setDimensions] = useState(
+    Dimensions.get("window").width
+  );
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const keyboardHide = () => {
+    Keyboard.dismiss();
+    setIsShowKeyboard(false);
+  }
+
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width;
+      setDimensions(width);
+    };
+    Dimensions.addEventListener("change", onChange);
+    return () => {
+      Dimensions.removeEventListener("change", onChange);
+    };
+  }, []);
+
   const [fontsLoaded] = useFonts({
-    Roboto_400Regular, 
+    Roboto_400Regular,
     Roboto_500Medium,
-  })
+  });
 
   useEffect(() => {
     async function prepare() {
@@ -39,16 +63,17 @@ const App = () => {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <ImageBackground
-          style={styles.image}
+          style={{...styles.image, width: dimensions}}
           source={require("./assets/images/photo_BG.jpg")}
         >
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
-            <RegistrationScreen/>
+            <RegistrationScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard}/>
+            {/* <LoginScreen isShowKeyboard={isShowKeyboard} setIsShowKeyboard={setIsShowKeyboard}/> */}
           </KeyboardAvoidingView>
         </ImageBackground>
       </View>
@@ -59,6 +84,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
   },
   image: {
     flex: 1,
@@ -69,3 +95,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+

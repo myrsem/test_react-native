@@ -4,24 +4,19 @@ import {
   Keyboard,
   View,
   TouchableOpacity,
-  Image,
   Text,
   TextInput,
 } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 
 const initialState = {
-  username: "",
   email: "",
   password: "",
 };
 
-const RegistrationScreen = ({isShowKeyboard,setIsShowKeyboard}) => {
-  const [image, setImage] = useState(null);
+const LoginScreen = ({ isShowKeyboard, setIsShowKeyboard }) => {
   const [state, setState] = useState(initialState);
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [isFocusInput, setIsFocusInput] = useState({
-    username: false,
     email: false,
     password: false,
   });
@@ -35,86 +30,16 @@ const RegistrationScreen = ({isShowKeyboard,setIsShowKeyboard}) => {
   const keyboardHide = () => {
     Keyboard.dismiss();
     setState(initialState);
-    setImage(null);
     console.log(state);
-    console.log(image);
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const deleteImage = () => {
-    setImage(null);
   };
 
   return (
     <View
-      style={{ ...styles.container, marginBottom: isShowKeyboard ? 400 : 240 }}
+      style={{ ...styles.container, marginBottom: isShowKeyboard ? 240 : 200 }}
     >
       <View style={styles.form}>
-        <View style={styles.wrap}>
-          <View style={styles.avatar}>
-            {image ? (
-              <TouchableOpacity
-                onPress={deleteImage}
-                style={styles.deleteBtn}
-                activeOpacity={0.8}
-              >
-                <Image source={require("../assets/images/delete.png")} />
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity
-                onPress={pickImage}
-                style={styles.btn}
-                activeOpacity={0.8}
-              >
-                <Image source={require("../assets/images/add.png")} />
-              </TouchableOpacity>
-            )}
-            {image && <Image style={styles.image} source={{ uri: image }} />}
-          </View>
-        </View>
-        <Text style={styles.title}>Реєстрація</Text>
+        <Text style={styles.title}>Увійти</Text>
         <View style={styles.inputwrap}>
-          <TextInput
-            style={{
-              ...styles.input,
-              borderColor: isFocusInput.username ? "#FF6C00" : "#F6F6F6",
-              backgroundColor: isFocusInput.username ? "#FFFFFF" : "#F6F6F6",
-            }}
-            placeholder="Логін"
-            placeholderTextColor="#BDBDBD"
-            value={state.username}
-            onFocus={() => {
-              setIsShowKeyboard(true),
-                setIsFocusInput({
-                  ...isFocusInput,
-                  username: true,
-                });
-            }}
-            onBlur={() => {
-              setIsFocusInput({
-                ...isFocusInput,
-                username: false,
-              });
-            }}
-            onChangeText={(value) =>
-              setState((prevState) => ({
-                ...prevState,
-                username: value,
-              }))
-            }
-          />
           <TextInput
             style={{
               ...styles.input,
@@ -193,15 +118,12 @@ const RegistrationScreen = ({isShowKeyboard,setIsShowKeyboard}) => {
           activeOpacity={0.8}
           onPress={keyboardHide}
         >
-          <Text style={styles.registerBtnText}>Зареєструватися</Text>
+          <Text style={styles.registerBtnText}>Увійти</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.loginLink}
-          activeOpacity={0.8}
-        >
+        <TouchableOpacity style={styles.loginLink} activeOpacity={0.8}>
           <Text style={styles.loginLinkText}>
-            Вже є обліковий запис? Увійти
+            Немає облікового запису? Зареєструватись
           </Text>
         </TouchableOpacity>
       </View>
@@ -215,43 +137,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   form: {
-    position: "relative",
-    height: 650,
+    height: 590,
     backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-  },
-  wrap: {
-    alignItems: "center",
-  },
-  avatar: {
-    position: "absolute",
-    top: -60,
-    width: 120,
-    height: 120,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-  },
-  btn: {
-    position: "absolute",
-    zIndex: 1,
-    top: 80,
-    left: 105,
-    width: 25,
-    height: 25,
-  },
-  deleteBtn: {
-    position: "absolute",
-    zIndex: 1,
-    top: 77,
-    left: 101,
-    width: 25,
-    height: 25,
-  },
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 16,
   },
   title: {
     fontFamily: "Roboto_500Medium",
@@ -260,7 +149,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 0.01,
     color: "#212121",
-    marginTop: 92,
+    marginTop: 32,
     marginBottom: 32,
   },
   inputwrap: {
@@ -315,5 +204,4 @@ const styles = StyleSheet.create({
     color: "#1B4371",
   },
 });
-
-export default RegistrationScreen;
+export default LoginScreen;
